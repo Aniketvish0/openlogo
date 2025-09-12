@@ -2,7 +2,7 @@ name: Refresh API limit Daily
 
 on:
   schedule:
-    - cron: "30 18 * * *" # equal to midnight 00:00 IST (UTC+5:30) as cron by default uses UTC
+    - cron: "*/2 * * * *" # every 2 minutes (UTC; Actions min granularity ~5 min)
   workflow_dispatch:
 
 jobs:
