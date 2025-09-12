@@ -14,20 +14,40 @@ async function refreshUsageCount() {
 
     await mongoose.connect(process.env.MONGO_URL);
 
-    await Subscriptions.updateMany(
-      {
-        is_active: true,
-        updated_at: { $lte: oneMonthAgo },
-      },
-      {
-        usage_count: 0,
-        updated_at: now,
-      }
-    ).then(() => {
-      console.log(
-        "Usage count refreshed for subscriptions older than one month since last reset"
-      );
+    const usersCol = mongoose.connection.db.collection("users");
+
+    const preUsers = await usersCol
+      .find({}, { projection: { password: 0 } })
+      .toArray();
+    const preSubscriptions = await Subscriptions.find({}).lean();
+
+    console.log("All users (before update):");
+    console.log(JSON.stringify(preUsers, null, 2));
+    console.log("All subscriptions (before update):");
+    console.log(JSON.stringify(preSubscriptions, null, 2));
+
+    const filter = {
+      is_active: true,
+      updated_at: { $lte: oneMonthAgo },
+    };
+
+    const updateResult = await Subscriptions.updateMany(filter, {
+      usage_count: 0,
+      updated_at: now,
     });
+
+    console.log("Update result:");
+    console.log(JSON.stringify(updateResult, null, 2));
+
+    const postUsers = await usersCol
+      .find({}, { projection: { password: 0 } })
+      .toArray();
+    const postSubscriptions = await Subscriptions.find({}).lean();
+
+    console.log("All users (after update):");
+    console.log(JSON.stringify(postUsers, null, 2));
+    console.log("All subscriptions (after update):");
+    console.log(JSON.stringify(postSubscriptions, null, 2));
   } catch (error) {
     console.error("Error refreshing usage count:", error);
     process.exit(1);
