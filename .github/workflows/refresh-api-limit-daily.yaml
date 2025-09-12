@@ -2,12 +2,11 @@ name: Refresh API limit Daily
 
 on:
   schedule:
-    - cron: "*/2 * * * *" # every 2 minutes (UTC; Actions min granularity ~5 min)
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
   refresh_usage_count:
-    if: github.ref == 'refs/heads/stage'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -19,7 +18,8 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v3
-
+        with:
+          ref: stage
       - name: Install Mongoose
         run: npm install mongoose --legacy-peer-deps
 
