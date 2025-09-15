@@ -2,13 +2,18 @@ name: Refresh API limit Daily
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 0 * * *" # daily at midnight
   workflow_dispatch:
 
 jobs:
   refresh_usage_count:
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    strategy:
+      matrix:
+        branch: [stage, prod]
+    environment: ${{ matrix.branch == 'stage' && 'STAGE' || 'PROD' }}
+
     steps:
       - name: set timezone
         run: |
@@ -17,9 +22,10 @@ jobs:
           timedatectl
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          ref: stage
+          ref: ${{ matrix.branch }}
+
       - name: Install Mongoose
         run: npm install mongoose --legacy-peer-deps
 
