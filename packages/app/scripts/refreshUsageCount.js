@@ -14,20 +14,20 @@ async function refreshUsageCount() {
 
     await mongoose.connect(process.env.MONGO_URL);
 
-    const filter = {
-      is_active: true,
-      updated_at: { $lte: oneMonthAgo },
-    };
-
-    const updateResult = await Subscriptions.updateMany(filter, {
-      usage_count: 0,
-      updated_at: now,
+    await Subscriptions.updateMany(
+      {
+        is_active: true,
+        updated_at: { $lte: oneMonthAgo },
+      },
+      {
+        usage_count: 0,
+        updated_at: now,
+      }
+    ).then(() => {
+      console.log(
+        "Usage count refreshed for subscriptions older than one month since last reset"
+      );
     });
-
-    console.log("Update result:");
-    console.log(JSON.stringify(updateResult, null, 2));
-
-    console.log("Usage count refreshed successfully");
   } catch (error) {
     console.error("Error refreshing usage count:", error);
     process.exit(1);
