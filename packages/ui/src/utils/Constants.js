@@ -439,6 +439,8 @@ export const PRIVACY_AND_TERMS = [
 
 export const SIGNUP = {
   title: "Sign up for free",
+  termsUrl: "/privacy#terms",
+  privacyUrl: "/privacy#privacy",
   fields: [
     { type: "text", name: "name", label: "Name" },
     { type: "email", name: "email", label: "Email" },
@@ -589,7 +591,7 @@ export const DOCUMENTATION = {
   ],
   localUrl: "Base URL: http://localhost:5000/api",
   baseStageUrl: "Base URL: https://api-stage.openlogo.fyi/api",
-  baseProdUrl: "Base URL: https://api.openlogo.fyi/api",
+  baseProdUrl: "Base URL: https://api-openlogo.fyi/api",
 };
 
 export const API_KEY_TABLE = {
