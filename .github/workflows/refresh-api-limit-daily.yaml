@@ -2,13 +2,12 @@ name: Refresh API limit Daily
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # daily at midnight (⚠️ only triggers on default branch!)
+    - cron: "*/5 * * * *" # daily at midnight
   workflow_dispatch:
-    branches:
-      - prod
 
 jobs:
   refresh_usage_count:
+    if: github.ref_name == 'prod'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
